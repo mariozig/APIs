@@ -1,8 +1,13 @@
+# MZ: I don't have any comments that speak to fundamental design issues or anything like that... to me, this code looks great.
+# The user input could be sanitized a bit but that sort of stuff is trivial. 
+# I think it's interesting how we both zeroed in on the pattern of "var_name = getter_of_var_name()"
+
 require 'rest-client'
 require 'json'
 require 'addressable/uri'
 require 'nokogiri'
 
+# MZ: Anything finder! 
 class IceCreamFinder
   def find
     start_address = get_starting_address
@@ -83,6 +88,7 @@ class IceCreamFinder
   end
 
   def get_directions(from, to)
+
     directions_params = {
       origin: "#{from}",
       destination: "#{to}",

@@ -6,6 +6,10 @@ require 'time'
 
 class TwitterApp
   attr_reader :access_token
+  # MZ: I've been wondering if constantizing these is actually a bad idea. The reason is if this 
+  # were a real client for twitter that your app was inflating for various twitter apps.....
+  # I'd imaging that instance variables representing the key and secret would need to be used
+  # in order to allow each instance of the "twitterapp" to represent a different twitter app.
   CONSUMER_KEY = 'f0XN7Wm737c6xrmX6MAwg'
   CONSUMER_SECRET = 'zu7YV9xhm0KxaLm9yFT719YOOxbeYMMfc6QP39ZKrsg'
   CONSUMER = OAuth::Consumer.new(CONSUMER_KEY, CONSUMER_SECRET,
@@ -100,6 +104,7 @@ class TwitterApp
     statuses.each do |post|
       text = post['text']
       user = post['user']['screen_name']
+      # MZ: Clean!
       time = Time.parse(post['created_at']).strftime("%a %l:%M%P")
       puts "#{time} | #{user}: #{text}"
     end
@@ -147,6 +152,9 @@ class TwitterApp
     check_success(access_token.post(post_url, post_params))
   end
 
+  # MZ: This is awesome and generic enough that you could
+  # even give "status" messages back for cases where Twitter is down
+  # which is pretty often... (parts of it are still written in rails, u know? j/k)
   def check_success(http_header)
     if http_header.code == "200"
       puts "Success!"
