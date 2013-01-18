@@ -100,9 +100,7 @@ class IceCreamFinder
     JSON.parse(RestClient.get(directions_url))['routes'][0]['legs']
   end
 
-  def print_directions(directions)
-    total_distance = directions[0]["distance"]["text"]
-    total_time = directions[0]["duration"]["text"]
+  def parse_directions(directions)
 
     steps = directions[0]["steps"].map do |step|
       instructions = Nokogiri::HTML(step["html_instructions"])
@@ -113,8 +111,15 @@ class IceCreamFinder
         instructions: instructions
       }
     end
+  end
 
-    puts "Walking Directions:"
+  def print_directions(directions)
+    total_distance = directions[0]["distance"]["text"]
+    total_time = directions[0]["duration"]["text"]
+    steps = parse_directions(directions)
+
+    puts "Walking Directions"
+    puts "Distance: #{total_distance}   Time: #{total_time}"
     steps.each_with_index do |step, i|
       puts "#{i + 1}. #{step[:instructions]} (#{step[:distance]})"
     end
