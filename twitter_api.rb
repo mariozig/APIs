@@ -12,16 +12,12 @@ class TwitterApp
     site: 'http://twitter.com')
 
   def initialize
-    if File.exist?('token.yaml')
-      @access_token = load_token
-    else
-      @access_token = get_access_token
-      save_token(access_token)
-    end
+    setup_user
   end
 
   def get_your_tweet_on
     puts "Welcome to the Terminal Twitter Client!"
+
     while true
       puts
       puts "TWITTER IN THE TERMINAL"
@@ -42,6 +38,17 @@ class TwitterApp
     end
   end
 
+  def setup_user
+    if File.exist?('token.yaml')
+      @access_token = load_token
+      print "Are you #{@access_token.params[:screen_name]} (y/n)? "
+      return if gets.chomp.downcase[0] == 'y'
+    end
+
+    @access_token = get_access_token
+    save_token(access_token)
+  end
+
   def save_token(access_token)
     File.open('token.yaml', 'w') do |f|
       f.puts access_token.to_yaml
@@ -54,7 +61,7 @@ class TwitterApp
 
   def get_access_token
     request_token = CONSUMER.get_request_token
-    puts "Please go to #{request_token.authorize_url} to authorize."
+    puts "Please go to #{request_token.authorize_url} to sign in and authorize."
 
     puts "Login, and enter your verification code:"
     code = gets.chomp
@@ -154,12 +161,4 @@ class TwitterApp
   end
 end
 
-TwitterApp.new.get_your_tweet_on
-
-# Request token URL https://api.twitter.com/oauth/request_token
-# Authorize URL https://api.twitter.com/oauth/authorize
-# Access token URL  https://api.twitter.com/oauth/access_token
-
-# Access token  611773-sOBkPDP9mpbv40lgXH5CwOKG3y8RUJZdiBMjY7ChUA
-# Access token secret 7ka5JDXtPecAgGbghnLzRx5fPg5qGPJtbo8M5Fkqfg
-# Access level  Read-only
+# TwitterApp.new.get_your_tweet_on
